@@ -17,6 +17,18 @@ namespace ApiMVCSeriesPeliculas.Controllers
         {
             return View();
         }
+        public IActionResult NuevoPersonaje()
+        {
+            return View();
+        }
+        public IActionResult ModificarPersonaje()
+        {
+            return View();
+        }
+        public IActionResult Series()
+        {
+            return View();
+        }
 
         public IActionResult Privacy()
         {
