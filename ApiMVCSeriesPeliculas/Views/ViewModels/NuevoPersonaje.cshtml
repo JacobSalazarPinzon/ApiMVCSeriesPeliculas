@@ -1,5 +1,97 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            function cargarSeries() {
+                var urlSeries = 'https://apiseriespersonajes.azurewebsites.net/api/Series';
+
+                $.ajax({
+                    url: urlSeries,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (series) {
+                        var select = $('#selectSeries');
+                        select.empty();
+
+                        select.append('<option selected disabled>Seleccione una serie</option>');
+
+                        $.each(series, function (index, serie) {
+                            select.append('<option value="' + serie.idSerie + '">' + serie.nombre + '</option>');
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error al cargar las series:', error);
+                    }
+                });
+            }
+
+            cargarSeries();
+
+
+        });
+        function nuevoPersonaje(personaje) {
+            var url = 'https://apiseriespersonajes.azurewebsites.net/api/Personajes';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: personaje,
+                contentType: "application/json;charset=utf-8",
+                success: function (data) {
+                    $('#form')[0].reset();
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Personaje añadido exitosamente!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                },
+                error: function (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al añadir personaje!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    console.error('Error al añadir el personaje:', error);
+                }
+            });
+        }
+
+        $('#btnNuevoPersonaje').on('click', function (event) {
+            event.preventDefault();
+            var personaje = {
+                nombre: $('#txtnombre').val(),
+                imagen: $('#txtimagen').val(),
+                idSerie: parseInt($('#selectSeries option:selected').val()) // Obtener idSerie en lugar del nombre de la serie y parsear a int
+            };
+            nuevoPersonaje(JSON.stringify(personaje));
+        });
+
+    </script>
 }
+<h1 style="color:blue">
+    Nuevo Personaje
+</h1>
+
+<a asp-controller="Home" asp-action="Index">
+    Volver a Index
+</a>
+
+<form method="post"  enctype="multipart/form-data" id="form">
+    <p>Introduce nombre del personaje</p>
+    <input type="text" name="nombre" class="form-control mb-3" id="txtnombre" />
+
+    <p>Introduce url de la imagen del pj</p>
+    <input type="text" name="imagen" class="form-control mb-3" id="txtimagen" />
+
+    <p>Introduce serie a la que pertenece el personaje</p>
+    <select class="form-select mb-3" id="selectSeries">
+    </select>
+
+
+    <button type="submit"  class="btn btn-info" id="btnNuevoPersonaje">
+        Añadir
+    </button>
+</form>
+<h2>@ViewData["MENSAJE"]</h2>
