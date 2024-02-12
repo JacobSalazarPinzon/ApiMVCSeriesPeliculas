@@ -13,7 +13,7 @@
                         var select = $('#selectSeries');
                         select.empty();
 
-                        select.append('<option selected disabled>Seleccione una serie</option>');
+                        select.append('<option selected disabled class="muted">Seleccione una serie...</option>');
 
                         $.each(series, function (index, serie) {
                             select.append('<option value="' + serie.idSerie + '">' + serie.nombre + '</option>');
@@ -70,28 +70,51 @@
 
     </script>
 }
-<h1 style="color:blue">
-    Nuevo Personaje
-</h1>
 
-<a asp-controller="Home" asp-action="Index">
-    Volver a Index
-</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ApiMVCSeriesPeliculas</title>
+</head>
+<body>
+    <div class="row mb-3">
+        <div class="col-6 d-flex justify-content-start">
+            <h1 class="text-primary">Nuevo Personaje</h1>
+        </div>
+        <div class="col-6 d-flex justify-content-end">
+            <button type="button" class="btn btn-success px-3">
+                <a asp-controller="Home" asp-action="Index" style="color: white; margin: 1rem 0 0 0; text-decoration:none;">
+                    Volver a Inicio
+                </a>
+            </button>
+        </div>
 
-<form method="post"  enctype="multipart/form-data" id="form">
-    <p>Introduce nombre del personaje</p>
-    <input type="text" name="nombre" class="form-control mb-3" id="txtnombre" />
+    </div>
 
-    <p>Introduce url de la imagen del pj</p>
-    <input type="text" name="imagen" class="form-control mb-3" id="txtimagen" />
+    <form method="post"  enctype="multipart/form-data" id="form" class="card p-3 bg-light">
+        <label for="nombre">Introduce nombre del personaje</label>
+        <input type="text" name="nombre" class="form-control mb-3" id="txtnombre" placeholder="Nombre..."/>
 
-    <p>Introduce serie a la que pertenece el personaje</p>
-    <select class="form-select mb-3" id="selectSeries">
-    </select>
+        <label for="imagen">Introduce url de la imagen del personaje</label>
+        <input type="text" name="imagen" class="form-control mb-3" id="txtimagen" placeholder="URL..." />
 
+        <label for="nombre">Introduce serie a la que pertenece el personaje</label>
+        <select class="form-select mb-3" id="selectSeries">
+        </select>
 
-    <button type="submit"  class="btn btn-info" id="btnNuevoPersonaje">
-        Añadir
-    </button>
-</form>
-<h2>@ViewData["MENSAJE"]</h2>
+        <div class="row mt-3">
+            <div class="col d-flex justify-content-center">
+                <button type="button" id="btnNuevoPersonaje" class="btn btn-primary btn-lg my-3">
+                    Añadir Personaje
+                </button>
+            </div>
+
+        </div>
+
+    </form>
+    
+
+</body>
+</html>
