@@ -1,5 +1,145 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@section scripts {
+    <script>
+        $(document).ready(function () {
+            recuperarSeries();
+            recuperarPersonajes();
+        });
+        // FUNCIONES SERIES
+        // recuperarSeries() | Funcion que permite recoger las series almacenadas dentro de la webApi
+        function recuperarSeries() {
+            // Reset del select
+            var select = $('#selectSerie');
+            select.empty();
+            select.append('<option selected disabled>Opcion...</option>');
+            // Funcion para recoger el JSON
+            $.getJSON('https://apiseriespersonajes.azurewebsites.net/api/Series', function (data) {
+                $.each(data, function (key, value) {
+                    select.append('<option value="' + value.idSerie + '">' + value.nombre + '</option>');
+                });
+            });
+        };
+
+        // Action event select Series
+        $('#selectSerie').on('change', function () {
+            cambiarInfoSerie($('#selectSerie option:selected').val())
+        });
+
+        // cambiarInfoSerie(int idSerie) | Funcion que cambiar la informacion mostrada en el div info-serie
+        function cambiarInfoSerie(idSerie) {
+            //Reset del div
+            var divinfo = $('#info-serie')
+            divinfo.empty()
+            // Funcion para recoger el JSON
+            $.getJSON('https://apiseriespersonajes.azurewebsites.net/api/Series/' + idSerie, function (data) {
+                divinfo.append('<h2 class=\"text-danger\">' + data.nombre + '</h2>');
+                divinfo.append('<img src=\"' + data.imagen + '\" style = \"width: 35%;\"/>');
+            })
+        }
+
+        // FUNCIONES PERSONAJES
+        // recuperarPersonajes() | Funcion que permite recoger los personajes almacenadas dentro de la webApi
+        function recuperarPersonajes() {
+            // Reset del select
+            var select = $('#selectPersonaje');
+            select.empty();
+            select.append('<option selected disabled>Opcion...</option>');
+            // Funcion para recoger el JSON
+            $.getJSON('https://apiseriespersonajes.azurewebsites.net/api/Personajes', function (data) {
+                $.each(data, function (key, value) {
+                    select.append('<option value="' + value.idPersonaje + '">' + value.nombre + '</option>');
+                });
+            });
+        };
+
+        // Action event select Personajes
+        $('#selectPersonaje').on('change', function () {
+            cambiarInfoPersonaje($('#selectPersonaje option:selected').val())
+        });
+
+        // cambiarInfoPersonaje(int idSerie) | Funcion que cambiar la informacion mostrada en el div info-personaje
+        function cambiarInfoPersonaje(idPersonaje) {
+            //Reset del div
+            var divinfo = $('#info-personaje')
+            divinfo.empty()
+            // Funcion para recoger el JSON
+            $.getJSON('https://apiseriespersonajes.azurewebsites.net/api/Personajes/' + idPersonaje, function (data) {
+                divinfo.append('<h2 class=\"text-primary\">' + data.nombre + '</h2>');
+                divinfo.append('<img src=\"' + data.imagen + '\" style = \"width: 35%;\"/>');
+            })
+        }
+
+        // FUNCIONES BUTTON
+        // Action event select Personajes
+        $('#btn-guardar').on('click', function () {
+            guardarCambios($('#selectPersonaje option:selected').val(), $('#selectSerie option:selected').val())
+            $('#selectSerie').empty()
+            recuperarSeries()
+            $('#selectPersonaje').empty()
+            recuperarPersonajes()
+            $('#info-serie').empty()
+            $('#info-personaje').empty()
+        });
+
+        // guardarCambios(idPersonaje,idSerie)
+        function guardarCambios(idPersonaje, idSerie) {
+            var urlSave = 'https://apiseriespersonajes.azurewebsites.net/api/Personajes/' + idPersonaje + '/' + idSerie;
+            $.ajax({
+                url: urlSave,
+                type: 'PUT',
+                success: function (data) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Personaje modificado exitosamente!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                },
+                error: function (msg) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Error al modificar',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            })
+        }
+
+    </script>
 }
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ApiMVCSeriesPeliculas</title>
+</head>
+<body>
+    <h1 class="text-primary">Personajes y Series</h1>
+
+    <p>Seleccione una serie:</p>
+    <select class="form-select mb-3" id="selectSerie">
+    </select>
+
+    <hr />
+
+    <p>Seleccione una personaje:</p>
+    <select class="form-select mb-3" id="selectPersonaje">
+    </select>
+
+    <button type="button" id="btn-guardar" class="btn btn-primary" style="color: white; margin: 1rem 0 0 0;">
+        Guardar Cambios
+    </button>
+
+    <hr />
+
+    <div id="info-serie">
+    </div>
+
+    <div id="info-personaje">
+    </div>
+
+</body>
+</html>
