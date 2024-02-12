@@ -28,16 +28,14 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="ViewModels" asp-action="ModificarPersonaje">Modificar Personajes</a>
                         </li>
-                        <li class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <li class="nav-item dropdown">
+                            <a id="navbarDropdownSeries" class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Series
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <a class="dropdown-item" href="#">Something else here</a>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownSeries" id="selectSeries">
                             </div>
                         </li>
+
                     </ul>
                 </div>
             </div>
@@ -47,6 +45,26 @@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
+    </div>
+    <!-- Contenedor de la imagen de la serie -->
+    <div class="container" id="serieImagenContainer" style="display: none;">
+        <div class="card"style="height=100%, width=100%">
+            <div style="height=30%">
+                <img id="serieImagen" class="card-img-top" src="#" alt="Imagen de la serie" />
+            </div>
+            <div class="card-body" style="height=70%">
+                <h5 class="card-title" id="serieNombre"></h5>
+                <p id="puntuacion"></p>
+                <button id="personajesButton"type="button" class="btn btn-success">Personajes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor de la lista de personajes -->
+    <div class="container mt-3" id="personajesContainer" style="display: none;">
+        <h3>Personajes</h3>
+        <ul id="listaPersonajes">
+        </ul>
     </div>
 
     <footer class="border-top footer text-muted">
@@ -59,5 +77,81 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    @RenderSection("WelcomeMessage", required: false)
+    <script>
+        $(document).ready(function () {
+            function cargarSeries() {
+                var urlSeries = 'https://apiseriespersonajes.azurewebsites.net/api/Series';
+
+                $.ajax({
+                    url: urlSeries,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (series) {
+                        var select = $('#selectSeries');
+
+                        $.each(series, function (index, serie) {
+
+
+                            select.append('<a class="dropdown-item" href="#" data-imagen="' + serie.imagen + '" data-nombre="' + serie.nombre + '" data-id="' + serie.idSerie + '" data-puntuacion="' + serie.puntuacion + '/">' + serie.nombre + '</a>');
+                        });
+                        $('.dropdown-item').click(function () {
+                            var imagen = $(this).data('imagen');
+                            var nombre = $(this).data('nombre');
+                            var idSerie = $(this).data('id');
+                            var puntuacion = $(this).data('puntuacion');
+                            $('#serieImagen').attr('src', imagen);
+                            $('#serieNombre').text(nombre);
+                            $('#puntuacion').text('Puntuacion: '+puntuacion);
+                            $('#serieImagenContainer').show();
+                            $('#personajesContainer').hide();
+                            $('#welcomeMessage').hide();
+
+                            $('#personajesButton').off('click').click(function () {
+                                cargarPersonajes(idSerie);
+                            });
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error al cargar las series:', error);
+                    }
+                });
+            }
+
+            function cargarPersonajes(idSerie) {
+                var urlPersonajes = 'https://apiseriespersonajes.azurewebsites.net/api/Series/PersonajesSerie/' + idSerie;
+
+                $.ajax({
+                    url: urlPersonajes,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (personajes) {
+                        var tableHTML = '<div class="mb-3"><button id="volverButton" type="button" class="btn btn-danger">Volver</button></div>';
+                        tableHTML += '<table class="table"><thead><tr><th>Personajes</th><th>Imagen</th></tr></thead><tbody>';
+                        $.each(personajes, function (index, personaje) {
+                            tableHTML += '<tr>';
+                            tableHTML += '<td>' + personaje.nombre + '</td>';
+                            tableHTML += '<td><img src="' + personaje.imagen + '" alt="' + personaje.nombre + '" style="max-width: 200px; max-height: 200px;"></td>';
+                            tableHTML += '</tr>';
+                        });
+                        tableHTML += '</tbody></table>';
+                        $('#personajesContainer').html(tableHTML).show();
+                        $('#serieImagenContainer').hide();
+
+                        $('#volverButton').click(function () {
+                            $('#personajesContainer').hide();
+                            $('#serieImagenContainer').show();
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error al cargar los personajes:', error);
+                    }
+                });
+            }
+
+            cargarSeries();
+
+        });
+    </script>
 </body>
 </html>

@@ -1,4 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using ApiMVCSeriesPeliculas.Models;
+using System.Text.Json;
+
 
 namespace ApiMVCSeriesPeliculas.Controllers
 {
@@ -12,9 +18,11 @@ namespace ApiMVCSeriesPeliculas.Controllers
         {
             return View();
         }
+
         public IActionResult Series()
         {
             return View();
         }
+
     }
 }
