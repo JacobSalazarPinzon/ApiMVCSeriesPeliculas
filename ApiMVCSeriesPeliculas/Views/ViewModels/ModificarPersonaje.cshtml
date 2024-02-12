@@ -117,28 +117,42 @@
     <title>@ViewData["Title"] - ApiMVCSeriesPeliculas</title>
 </head>
 <body>
-    <h1 class="text-primary">Personajes y Series</h1>
+    <div class="row mb-3">
+        <div class="col-6 d-flex justify-content-start">
+            <h1 class="text-primary">Personajes y Series</h1>
+        </div>
+        <div class="col-6 d-flex justify-content-end">
+            <button type="button" class="btn btn-success px-3">
+                <a asp-controller="Home" asp-action="Index" style="color: white; margin: 1rem 0 0 0; text-decoration:none;">
+                    Volver a Inicio
+                </a>
+            </button>
+        </div>
+    </div>
+    <div class="card p-3 bg-light">
 
-    <p>Seleccione una serie:</p>
-    <select class="form-select mb-3" id="selectSerie">
-    </select>
+        <label for="serie">Seleccione una serie:</label>
+        <select class="form-select mb-3" id="selectSerie">
+        </select>
 
-    <hr />
+        <label for="personaje">Seleccione un personaje:</label>
+        <select class="form-select mb-3" id="selectPersonaje">
+        </select>
 
-    <p>Seleccione una personaje:</p>
-    <select class="form-select mb-3" id="selectPersonaje">
-    </select>
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                <button type="button" id="btn-guardar" class="btn btn-primary" style="color: white; margin: 1rem 0 0 0;">
+                    Guardar Cambios
+                </button>
+            </div>
+        </div>
 
-    <button type="button" id="btn-guardar" class="btn btn-primary" style="color: white; margin: 1rem 0 0 0;">
-        Guardar Cambios
-    </button>
-
-    <hr />
-
-    <div id="info-serie">
     </div>
 
-    <div id="info-personaje">
+    <div id="info-serie" class="text-center">
+    </div>
+
+    <div id="info-personaje" class="text-center">
     </div>
 
 </body>
