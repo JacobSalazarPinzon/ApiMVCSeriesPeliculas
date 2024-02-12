@@ -48,14 +48,14 @@
     </div>
     <!-- Contenedor de la imagen de la serie -->
     <div class="container" id="serieImagenContainer" style="display: none;">
-        <div class="card"style="height=100%, width=100%">
-            <div style="height=30%">
+        <div class="card" style="height: 100%; width: 35%">
+            <div>
                 <img id="serieImagen" class="card-img-top" src="#" alt="Imagen de la serie" />
             </div>
-            <div class="card-body" style="height=70%">
+            <div class="card-body">
                 <h5 class="card-title" id="serieNombre"></h5>
                 <p id="puntuacion"></p>
-                <button id="personajesButton"type="button" class="btn btn-success">Personajes</button>
+                <button id="personajesButton"type="button" class="btn btn-success" style="width: 100%">Personajes</button>
             </div>
         </div>
     </div>
@@ -96,6 +96,9 @@
                             select.append('<a class="dropdown-item" href="#" data-imagen="' + serie.imagen + '" data-nombre="' + serie.nombre + '" data-id="' + serie.idSerie + '" data-puntuacion="' + serie.puntuacion + '/">' + serie.nombre + '</a>');
                         });
                         $('.dropdown-item').click(function () {
+                            var container = document.getElementById("serieImagenContainer");
+                            container.style.display = "flex";
+                            container.style.justifyContent = "center";
                             var imagen = $(this).data('imagen');
                             var nombre = $(this).data('nombre');
                             var idSerie = $(this).data('id');
@@ -127,7 +130,7 @@
                     dataType: 'json',
                     success: function (personajes) {
                         var tableHTML = '<div class="mb-3"><button id="volverButton" type="button" class="btn btn-danger">Volver</button></div>';
-                        tableHTML += '<table class="table"><thead><tr><th>Personajes</th><th>Imagen</th></tr></thead><tbody>';
+                        tableHTML += '<table class="table" style=\"background-color: #1f2121; color: white; \"><thead><tr><th>Personajes</th><th>Imagen</th></tr></thead><tbody>';
                         $.each(personajes, function (index, personaje) {
                             tableHTML += '<tr>';
                             tableHTML += '<td>' + personaje.nombre + '</td>';
@@ -142,6 +145,12 @@
                             $('#personajesContainer').hide();
                             $('#serieImagenContainer').show();
                         });
+
+                        var td = document.getElementsByTagName("td");
+                        for (var i = 0; i < td.length; i++) {
+                            td[i].style.border = "1px solid gray";
+                        }
+                        
                     },
                     error: function (xhr, status, error) {
                         console.error('Error al cargar los personajes:', error);
